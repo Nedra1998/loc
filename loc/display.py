@@ -1,16 +1,22 @@
 import os
-
-
-def set_color(lang):
-    color = lang.color.lstrip('#')
-    if color == str():
-        color = "939393"
-    rgb = tuple(int(color[i:i + 2], 16) for i in (0, 2, 4))
-    return "\033[38;2;{};{};{}m".format(rgb[0], rgb[1], rgb[2])
-
+import color
 
 def print_lang(lang, width):
-    return "{}\u25CF\033[0m {:<{}} ".format(set_color(lang), lang.name, width)
+    return " {}\u25CF{} {:<{}} ".format(color.get_color(lang.color), color.get_color(color.Color.DEFAULT), lang.name, width)
+
+
+def display_length(string):
+    length = 0
+    counting = 0
+    for char in string:
+        if char == '\033':
+            counting = 1
+        elif char == 'm' and counting == 1:
+            counting = 0
+            length -= 1
+        if counting == 0:
+            length += 1
+    return length
 
 
 def print_languages(items):
@@ -24,7 +30,6 @@ def print_languages(items):
         col += 1
     while col * max(lengths) > columns:
         col -= 1
-    #  print(col)
     width = max(lengths) - 2
     split = count / col
     groups = []

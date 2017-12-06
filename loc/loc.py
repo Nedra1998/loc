@@ -9,6 +9,8 @@ import json
 import pprint
 import argparse
 import display
+import table
+import color
 
 
 class Language(object):
@@ -248,7 +250,13 @@ def main():
         global languages
         display.print_languages(languages)
     else:
-        run_counter(args.dir, args.recurse)
+        pass
+        #  run_counter(args.dir, args.recurse)
+    data = [["AA", "AB", "AC", "AD"], ["BA", "BB", "BC", "BD"], ["CA", "\033[32mCB\033[0m"]]
+    tab = table.Table(data, title_row=True, title_column=True, draw_box=True)
+    tab.display()
+    #  print(tab.cells)
+
 
 if __name__ == "__main__":
     main()
