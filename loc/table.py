@@ -1,12 +1,20 @@
 import color
 import display
+from enum import Enum
 from color import Color
 
 
 class Cell(object):
+    class Align(Enum):
+        NONE = 0
+        CENTER = 1
+        RIGHT = 2
+        LEFT = 3
+
     def __init__(self, string=str(), title=False):
         self.string = string
         self.title = title
+        self.align = self.Align.CENTER
 
     def __repr__(self):
         if self.title is True:
@@ -19,8 +27,18 @@ class Cell(object):
     def display(self, width=None):
         if width is None:
             width = self.length()
-        print("{:^{}}".format(self.string, width +
-                              (len(self.string) - self.length())), end='')
+        if self.align is self.Align.CENTER:
+            print("{:^{}}".format(self.string, width +
+                                  (len(self.string) - self.length())), end='')
+        elif self.align is self.Align.LEFT:
+            print("{:<{}}".format(self.string, width +
+                                  (len(self.string) - self.length())), end='')
+        elif self.align is self.Align.RIGHT:
+            print("{:>{}}".format(self.string, width +
+                                  (len(self.string) - self.length())), end='')
+        else:
+            print("{:{}}".format(self.string, width +
+                                 (len(self.string) - self.length())), end='')
 
 
 class Table(object):
@@ -30,6 +48,7 @@ class Table(object):
         self.cells = [[]]
         self.generate_cells(data)
         self.title_bold = True
+        self.zebra = False
         self.draw_box = draw_box
         self.box = [['\u2501', '\u2503', '\u250F', '\u2513', '\u2517',
                      '\u251b', '\u2523', '\u252b', '\u2533', '\u253b', '\u254b'],
@@ -53,6 +72,14 @@ class Table(object):
                     self.cells[i][j] = Cell(item, True)
                 else:
                     self.cells[i][j] = Cell(item)
+
+    def set_column_alignment(self, j, align):
+        for row in self.cells:
+            row[j].align = align
+
+    def set_row_alignment(self, i, align):
+        for item in self.cells[i]:
+            item.align = align
 
     def get_box_corner(self, ul, ur=None, bl=None, br=None):
         if isinstance(ul, tuple):
@@ -137,7 +164,6 @@ class Table(object):
             return self.box[3][4]
         return self.box[1][10]
 
-
     def get_box_edge(self, l, r=None, vert=False):
         if isinstance(r, bool):
             vert = r
@@ -148,9 +174,9 @@ class Table(object):
         else:
             val = 0
         if l or r:
-            return self.box[0][1-val]
+            return self.box[0][1 - val]
         else:
-            return self.box[1][1-val]
+            return self.box[1][1 - val]
 
     def get_cell_corner(self, i, j):
         ul = None
@@ -182,12 +208,21 @@ class Table(object):
                 r = self.cells[i][j].title
         return (l, r)
 
+    def get_longest(self, j):
+        length = 0
+        for i, row in enumerate(self.cells):
+            length = max(length, row[j].length() + 1)
+        return length
+
     def display(self):
         width = 10
         prev = False
         for i, row in enumerate(self.cells):
+            if self.zebra is True and i % 2 != 0:
+                print(color.get_color(0, background=True), end='')
             if self.draw_box is True and i == 0:
                 for j, cell in enumerate(row):
+                    width = self.get_longest(j)
                     print(self.get_box_corner(
                         self.get_cell_corner(i, j)), sep='', end='')
                     if cell.title is True:
@@ -196,17 +231,28 @@ class Table(object):
                         print(self.box[1][0] * width, sep='', end='')
                 print(self.get_box_corner(self.get_cell_corner(i, len(row))))
             for j, cell in enumerate(row):
-                print(self.get_box_edge(self.get_cell_edge(
-                    i, j, True), True), sep='', end='')
+                width = self.get_longest(j)
+                if self.draw_box is True:
+                    print(self.get_box_edge(self.get_cell_edge(
+                        i, j, True), True), sep='', end='')
+                else:
+                    print(' ',end='')
                 if cell.title is True and self.title_bold is True:
                     print("\033[1m", end='')
-                cell.display(10)
+                cell.display(width)
                 if cell.title is True and self.title_bold is True:
                     print("\033[21m", end='')
-            print(self.get_box_edge(self.get_cell_edge(i,len(row), True), True))
+            if self.draw_box is True:
+                print(self.get_box_edge(self.get_cell_edge(
+                    i, len(row), True), True), end='')
+            if self.zebra is True and i % 2 != 0:
+                print(color.get_color(color.Color.DEFAULT, background=True), end='')
+            print()
             if self.draw_box is True and i != len(self.cells):
                 for j, cell in enumerate(row):
-                    print(self.get_box_corner(self.get_cell_corner(i+1, j)), sep='', end='')
+                    width = self.get_longest(j)
+                    print(self.get_box_corner(
+                        self.get_cell_corner(i + 1, j)), sep='', end='')
                     if cell.title is True:
                         print(self.box[0][0] * width, sep='', end='')
                     else:

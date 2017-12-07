@@ -46,6 +46,8 @@ def get_color(color, background=False):
     access = get_color_ability()
     if isinstance(color, str):
         color = color.lstrip('#')
+        if color == str():
+            color = "aaafb4"
         color = tuple(int(color[i:i + 2], 16) for i in (0, 2, 4))
     if isinstance(color, list):
         color = tuple(color)
