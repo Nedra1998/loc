@@ -1,7 +1,7 @@
-import color
-import display
+import loc.color as color
+import loc.display as display
 from enum import Enum
-from color import Color
+from loc.color import Color
 
 
 class Cell(object):

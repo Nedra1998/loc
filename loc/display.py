@@ -1,6 +1,6 @@
 import math
 import os
-import color
+import loc.color as color
 import numpy as np
 
 def print_lang(lang, width):

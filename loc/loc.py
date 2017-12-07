@@ -4,13 +4,11 @@ import os
 from operator import add
 from os import listdir
 from os.path import isfile, join
-import yaml
 import json
-import pprint
 import argparse
-import display
-import table
-import color
+import loc.display as display
+import loc.table as table
+import loc.color as color
 
 
 class Language(object):
@@ -99,7 +97,7 @@ def print_table(table, has_title=False, colors=list(), col=None):
 
 def load_languages():
     global languages
-    data = json.load(open("languages.json"))
+    data = json.load(open(os.path.join(os.path.dirname(os.path.realpath(__file__)), "languages.json")))
     for key, value in data.items():
         lang = Language(key, value['extensions'], value['comments'], value['type'], value['color'], value['id'])
         languages.append(lang)
@@ -109,7 +107,7 @@ def save_languages():
     data = dict()
     for lang in languages:
         data[lang.name] = {"type": lang.type, "color": lang.color, "extensions": lang.extensions , "comments": lang.comments, "id": lang.id}
-    with open("languages.json", "w") as out:
+    with open(os.path.join(os.path.dirname(os.path.realpath(__file__)), "languages.json"), "w") as out:
         json.dump(data, out)
 
 
