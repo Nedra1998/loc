@@ -22,10 +22,11 @@ def display_length(string):
 
 
 def print_languages(items):
+    cp = items[:]
     rows, columns = os.popen("stty size", "r").read().split()
     rows = int(rows)
     columns = int(columns)
-    lengths = [len(x.name) + 2 for x in items]
+    lengths = [len(x.name) + 2 for x in cp]
     count = len(lengths)
     col = 1
     while count / col > (rows * 0.25):
@@ -36,11 +37,11 @@ def print_languages(items):
     split = count / col
     groups = []
     last = 0.0
-    while len(items) % int(split) != 0:
-        items.append(None)
-    split = len(items) / col
-    while last < len(items):
-        groups.append(items[int(last):int(last + split)])
+    while len(cp) % int(split) != 0:
+        cp.append(None)
+    split = len(cp) / col
+    while last < len(cp):
+        groups.append(cp[int(last):int(last + split)])
         last += split
     for i in range(0, len(max(groups, key=len))):
         for li in groups:
