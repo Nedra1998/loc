@@ -255,7 +255,7 @@
   "Markdown": {
     "type": "prose",
     "color": "",
-    "extensions": [".md", ".markdown", ".mdown", ".mdwn", ".mkd", ".mkdown", ".ron", ".workbook"],
+    "extensions": [".md", ".markdown", ".mdown", ".mdwn", ".mkd", ".mkdown", ".ron", ".workbook", ".emd"],
     "comments": [],
     "id": 37
   },

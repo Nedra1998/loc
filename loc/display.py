@@ -1,10 +1,12 @@
 import math
 import os
 import loc.color as color
-import numpy as np
+
 
 def print_lang(lang, width):
-    return " {}\u25CF{} {:<{}} ".format(color.get_color(lang.color), color.get_color(color.Color.DEFAULT), lang.name, width)
+    return " {}\u25CF{} {:<{}} ".format(
+        color.get_color(lang.color),
+        color.get_color(color.Color.DEFAULT), lang.name, width)
 
 
 def display_length(string):
@@ -51,6 +53,7 @@ def print_languages(items):
                 print(" " * (width + 3), end='')
         print('')
 
+
 def print_char(fill, a, b):
     print(color.get_color(a.color), end='')
     if fill != 8:
@@ -76,21 +79,22 @@ def print_char(fill, a, b):
         print(color.get_color(color.Color.DEFAULT, background=True), end='')
 
 
-def print_bar(data, total, sort,width):
+def print_bar(data, total, sort, width):
     percents = [[None, None, None]] * len(data)
     i = 0
     for key, value in data.items():
         if isinstance(sort, int):
             percents[i] = [key, value[sort] / total[sort]]
         else:
-            percents[i] = [key, value[sort[0]][sort[1]] / total[sort[0]][sort[1]]]
+            percents[
+                i] = [key, value[sort[0]][sort[1]] / total[sort[0]][sort[1]]]
         i += 1
     percents = sorted(percents, key=lambda x: -x[1])
-    splits =[None] * int(width * 8)
+    splits = [None] * int(width * 8)
     index = 0
     count = 0
     for i, split in enumerate(splits):
-        if count + (percents[index][1]* width) >= (i * 0.125):
+        if count + (percents[index][1] * width) >= (i * 0.125):
             splits[i] = percents[index][0]
         else:
             count += (percents[index][1] * width)
@@ -100,7 +104,7 @@ def print_bar(data, total, sort,width):
                 splits[i] = percents[index + 1][0]
             index += 1
     for i in range(0, len(splits), 8):
-        div = [x for x in splits[i:i+8]]
+        div = [x for x in splits[i:i + 8]]
         counts = dict()
         for j in range(0, 8):
             if div[j] not in counts:
