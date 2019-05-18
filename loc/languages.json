@@ -305,9 +305,9 @@
   },
   "OCaml": {
     "type": "programming",
-    "color": "#3be133",
+    "color": "#3BE133",
     "extensions": [".ml", ".eliom", ".eliomi", ".ml4", ".mli", ".mll", ".mly"],
-    "comments": [],
+    "comments": ["(*"],
     "files": [],
     "id": 255
   },
